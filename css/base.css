@@ -1,0 +1,213 @@
+/* ============================================================
+   Токены, сброс, типографическая база
+   ============================================================ */
+
+:root {
+  /* --- фирменные цвета --- */
+  --accent: #F85600;
+  --light:  #EBEBEB;
+  --dark:   #1E1E1E;
+
+  /* --- производные --- */
+  --bg:            var(--dark);
+  --fg:            var(--light);
+  --muted:         rgba(235, 235, 235, .58);
+  --muted-strong:  rgba(235, 235, 235, .80);
+  --surface:       #262626;
+  --surface-2:     #2E2E2E;
+  --line:          rgba(235, 235, 235, .12);
+  --line-strong:   rgba(235, 235, 235, .26);
+  --accent-soft:   rgba(248, 86, 0, .14);
+  --accent-glow:   rgba(248, 86, 0, .40);
+
+  /* инверсия для светлой секции */
+  --inv-bg:     var(--light);
+  --inv-fg:     var(--dark);
+  --inv-muted:  rgba(30, 30, 30, .62);
+  --inv-line:   rgba(30, 30, 30, .14);
+
+  /* --- шрифты --- */
+  --font-display: 'Onest', 'Segoe UI', sans-serif;
+  --font-sub:     'JetBrains Mono', Consolas, monospace;
+  --font-body:    'JetBrains Mono', Consolas, monospace;
+
+  /* --- ритм --- */
+  --gutter:    clamp(20px, 4vw, 64px);
+  --maxw:      1440px;
+  --section-y: clamp(72px, 10vw, 160px);
+
+  /* --- скругления --- */
+  --r-sm:  12px;
+  --r-md:  20px;
+  --r-lg:  32px;
+  --r-xl:  44px;
+
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* --- сброс --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(14px, .95vw, 16px);
+  line-height: 1.7;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* пока идёт прелоадер — страница не скроллится */
+body.is-locked { overflow: hidden; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: .96;
+  letter-spacing: -.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; }
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--light);
+}
+
+/* --- типографические роли --- */
+.eyebrow {
+  font-family: var(--font-sub);
+  font-weight: 700;
+  font-size: clamp(11px, .78vw, 13px);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: .7em;
+}
+.eyebrow::before {
+  content: '';
+  width: 26px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.h-xxl { font-size: clamp(44px, 9.2vw, 152px); }
+.h-xl  { font-size: clamp(30px, 4.6vw, 68px); }
+.h-lg  { font-size: clamp(26px, 3.2vw, 48px); }
+.h-md  { font-size: clamp(20px, 1.9vw, 28px); }
+
+.lead {
+  font-family: var(--font-sub);
+  font-weight: 400;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.6;
+  color: var(--muted-strong);
+}
+
+.muted { color: var(--muted); }
+.accent { color: var(--accent); }
+
+/* контурный текст — используется в hero и в крупных цифрах */
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  paint-order: stroke fill;
+}
+
+/* --- сетка --- */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: var(--section-y); position: relative; }
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(20px, 3vw, 48px);
+  margin-bottom: clamp(36px, 5vw, 72px);
+}
+/* Ширины в px, а не в ch: ch считается по шрифту самого блока (моноширинный 16px),
+   а внутри лежит заголовок 68px — из-за этого колонка выходила втрое уже,
+   чем нужно, и слова падали по одному в строку. */
+.section-head__text  { flex: 1 1 480px; max-width: 780px; }
+.section-head__aside { flex: 0 1 400px; max-width: 400px; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- зерно поверх всего --- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  opacity: .30;
+  mix-blend-mode: overlay;
+  background-image: url('../assets/noise.svg');
+  background-size: 220px 220px;
+}
+
+/* --- уважение к настройкам системы --- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .grain { display: none; }
+}

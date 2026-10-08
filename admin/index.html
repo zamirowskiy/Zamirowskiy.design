@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Админка — портфолио</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../css/fonts.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="app" id="app" hidden>
+
+  <!-- ============ БОКОВОЕ МЕНЮ ============ -->
+  <aside class="side">
+    <div class="side__brand">
+      <img id="sideLogo" src="../assets/logo.svg" alt="">
+      <span>админка</span>
+    </div>
+
+    <nav class="side__nav" id="sideNav">
+      <button data-page="works" class="is-active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+        Портфолио <em id="navCount"></em>
+      </button>
+      <button data-page="cats">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></svg>
+        Разделы
+      </button>
+      <button data-page="texts">
+        <svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg>
+        Тексты и кнопки
+      </button>
+      <button data-page="brand">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+        Логотип и фото
+      </button>
+      <button data-page="backups">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4"/><path d="M12 8v4l3 2"/></svg>
+        Резервные копии
+      </button>
+    </nav>
+
+    <a class="side__site" href="../" target="_blank" rel="noopener">
+      Открыть сайт
+      <svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg>
+    </a>
+  </aside>
+
+  <!-- ============ ОСНОВНАЯ ОБЛАСТЬ ============ -->
+  <div class="main">
+    <header class="top">
+      <h1 class="top__title" id="pageTitle">Портфолио</h1>
+      <span class="top__status" id="status" data-state="saved">Всё сохранено</span>
+      <button class="btn btn--accent" id="saveBtn" disabled>
+        Сохранить
+        <kbd>Ctrl+S</kbd>
+      </button>
+    </header>
+
+    <div class="page" id="page"></div>
+  </div>
+</div>
+
+<!-- ============ РЕДАКТОР КЕЙСА (выезжает справа) ============ -->
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer__backdrop" data-drawer-close></div>
+  <section class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <header class="drawer__head">
+      <h2 id="drawerTitle">Кейс</h2>
+      <button class="icon-btn" data-drawer-close aria-label="Закрыть">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="drawer__body" id="drawerBody"></div>
+    <footer class="drawer__foot">
+      <button class="btn btn--danger-ghost" id="deleteCase">Удалить кейс</button>
+      <button class="btn btn--accent" data-drawer-close>Готово</button>
+    </footer>
+  </section>
+</div>
+
+<!-- ============ ДИАЛОГ ПОДТВЕРЖДЕНИЯ ============ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" data-modal="cancel"></div>
+  <div class="modal__box" role="alertdialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle"></h3>
+    <p id="modalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" data-modal="cancel">Отмена</button>
+      <button class="btn btn--danger" data-modal="ok" id="modalOk">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- ============ ЕСЛИ ОТКРЫЛИ БЕЗ СЕРВЕРА ============ -->
+<div class="offline" id="offline" hidden>
+  <div>
+    <h1>Админка не запущена</h1>
+    <p>Эта страница сохраняет изменения через маленький сервер на&nbsp;вашем компьютере.
+       Откройте папку сайта и&nbsp;дважды щёлкните <b>Админка.bat</b>&nbsp;— браузер откроется сам.</p>
+    <p class="offline__hint" id="offlineHint"></p>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Роман Замировский — графический дизайнер</title>
+<meta name="description" content="Логотипы, фирменный стиль, сайты и полиграфия. Портфолио графического дизайнера Романа Замировского.">
+<meta name="theme-color" content="#1E1E1E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Роман Замировский — графический дизайнер">
+<meta property="og:description" content="Логотипы, фирменный стиль, сайты и полиграфия.">
+<meta property="og:image" content="assets/works/stroy-i-zhivi-1.jpg">
+
+<link rel="preload" href="assets/fonts/Onest-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/JetBrainsMono.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="is-locked">
+
+<!--
+  Тексты, логотип, контакты и работы берутся из data/content.js
+  (правится через админку — Админка.bat). Тексты ниже — запасные:
+  их видят поисковики и те, у кого выключен JavaScript.
+-->
+
+<!-- ============ ПРЕЛОАДЕР ============ -->
+<div class="preloader" id="preloader">
+  <div class="preloader__inner">
+    <img class="preloader__logo js-logo" src="assets/logo.svg" alt="Roman Zamirovsky" width="406" height="123">
+    <span class="preloader__count" id="preloaderCount">0</span>
+  </div>
+  <div class="preloader__bar"><i id="preloaderBar"></i></div>
+</div>
+
+<!-- ============ КУРСОР ============ -->
+<div class="cursor" id="cursor" aria-hidden="true">
+  <span class="cursor__dot"></span>
+  <span class="cursor__ring"><em class="cursor__label">Смотреть</em></span>
+</div>
+
+<!-- ============ ПРОГРЕСС СКРОЛЛА ============ -->
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<!-- ============ ШАПКА ============ -->
+<header class="header" id="header">
+  <div class="wrap header__inner">
+    <a class="logo" href="#hero" aria-label="В начало">
+      <img class="js-logo" src="assets/logo.svg" alt="Roman Zamirovsky" width="406" height="123">
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="#work" data-t="nav.work">Работы</a>
+      <a href="#about" data-t="nav.about">Обо мне</a>
+      <a href="#process" data-t="nav.process">Как работаю</a>
+      <a href="#contact" data-t="nav.contact">Контакты</a>
+    </nav>
+
+    <a class="btn btn--accent header__cta" href="#contact" data-magnetic>
+      <span data-t="header.cta">Обсудить проект</span>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero__bg" aria-hidden="true">
+    <video class="hero__video" id="heroVideo"
+           autoplay muted loop playsinline preload="auto">
+      <source src="assets/hero.mp4" type="video/mp4">
+    </video>
+    <span class="hero__scrim"></span>
+    <span class="blob blob--1" data-parallax="0.18"></span>
+    <span class="blob blob--2" data-parallax="-0.10"></span>
+  </div>
+
+  <div class="wrap hero__inner">
+    <p class="eyebrow" data-reveal data-t="hero.eyebrow">Роман Замировский · графический дизайнер</p>
+
+    <h1 class="hero__title">
+      <span class="hero__line" data-split data-t="hero.line1">Логотипы, сайты</span>
+      <span class="hero__line" data-split data-t="hero.line2">и&nbsp;полиграфия</span>
+      <span class="hero__line hero__line--accent" data-split data-t="hero.line3">для бизнеса</span>
+    </h1>
+
+    <div class="hero__foot">
+      <p class="lead hero__lead" data-reveal data-t="hero.lead">
+        Делаю фирменный стиль для строительных компаний, кафе, салонов
+        и&nbsp;небольших производств. Знак, который потом живёт на&nbsp;каске,
+        вывеске, этикетке и&nbsp;сайте.
+      </p>
+
+      <div class="hero__actions" data-reveal>
+        <a class="btn btn--accent btn--lg" href="#work" data-magnetic>
+          <span data-t="hero.btnPrimary">Смотреть работы</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#contact" data-magnetic>
+          <span data-t="hero.btnSecondary">Написать мне</span>
+        </a>
+      </div>
+    </div>
+
+    <a class="hero__scroll" href="#work" aria-label="Листать вниз">
+      <span class="hero__scroll-line"></span>
+      <span class="hero__scroll-text">Листайте</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ БЕГУЩАЯ СТРОКА ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" id="marqueeTrack">
+    <div class="marquee__group">
+      <span>Логотипы</span><i>✳</i><span>Фирменный стиль</span><i>✳</i>
+      <span>Сайты</span><i>✳</i><span>Полиграфия</span><i>✳</i>
+      <span>Упаковка</span><i>✳</i><span>Вывески</span><i>✳</i>
+    </div>
+    <div class="marquee__group">
+      <span>Логотипы</span><i>✳</i><span>Фирменный стиль</span><i>✳</i>
+      <span>Сайты</span><i>✳</i><span>Полиграфия</span><i>✳</i>
+      <span>Упаковка</span><i>✳</i><span>Вывески</span><i>✳</i>
+    </div>
+  </div>
+</div>
+
+<!-- ============ РАБОТЫ ============ -->
+<section class="section work" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head__text">
+        <p class="eyebrow" data-reveal data-t="work.eyebrow">Портфолио</p>
+        <h2 class="h-xl" data-split data-t="work.title">Работы</h2>
+      </div>
+      <p class="section-head__aside lead" data-reveal data-t="work.aside">
+        Нажмите на&nbsp;проект, чтобы посмотреть все макеты и&nbsp;носители.
+      </p>
+    </div>
+
+    <div class="work__bar" data-reveal>
+      <!-- кнопки разделов рисует js/main.js из CONTENT.categories -->
+      <div class="filter" id="workFilter" role="tablist" aria-label="Разделы портфолио"></div>
+      <label class="search">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="workSearch" placeholder="Поиск по работам" aria-label="Поиск по работам" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="work__grid" id="workGrid" aria-live="polite"><!-- карточки из data/content.js --></div>
+    <p class="work__empty" id="workEmpty" data-t="work.empty" hidden>Ничего не нашлось. Попробуйте другое слово или раздел.</p>
+
+    <noscript><p class="lead">Включите JavaScript, чтобы посмотреть работы.</p></noscript>
+  </div>
+</section>
+
+<!-- ============ ОБО МНЕ (светлая инверсия) ============ -->
+<section class="section about" id="about" data-theme="light">
+  <div class="wrap about__inner">
+    <div class="about__media" data-reveal>
+      <div class="about__photo" id="aboutPhoto">
+        <img src="assets/roman.webp" alt="Роман Замировский" width="1101" height="1408" decoding="async" loading="lazy">
+      </div>
+      <span class="about__badge">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <defs><path id="circlePath" d="M50,50 m-34,0 a34,34 0 1,1 68,0 a34,34 0 1,1 -68,0"/></defs>
+          <text><textPath href="#circlePath" data-t="about.badge">логотипы · сайты · полиграфия · </textPath></text>
+        </svg>
+        <i>✳</i>
+      </span>
+    </div>
+
+    <div class="about__text">
+      <p class="eyebrow" data-reveal data-t="about.eyebrow">Обо мне</p>
+      <h2 class="h-lg" data-split data-t="about.title">Привет, я&nbsp;Роман</h2>
+      <div id="aboutParagraphs">
+        <p class="about__p" data-reveal>
+          Графический дизайнер. Делаю логотипы, фирменный стиль, сайты
+          и&nbsp;полиграфию: от&nbsp;знака строительной компании до&nbsp;этикетки
+          на&nbsp;пряники по&nbsp;купеческому рецепту.
+        </p>
+      </div>
+      <ul class="about__facts" id="aboutFacts" data-reveal>
+        <li><b>Работаю удалённо</b><span>с&nbsp;клиентами по&nbsp;всей России</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ПРОЦЕСС ============ -->
+<section class="section process" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head__text">
+        <p class="eyebrow" data-reveal data-t="process.eyebrow">Как идёт работа</p>
+        <h2 class="h-xl" data-split data-t="process.title">Четыре шага без сюрпризов</h2>
+      </div>
+    </div>
+
+    <ol class="process__list" id="processList">
+      <li class="process__item" data-reveal>
+        <span class="process__num">01</span>
+        <h3 class="h-md">Бриф</h3>
+        <p>Созваниваемся, разбираю задачу, аудиторию и конкурентов. На выходе — понятное ТЗ и смета.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ КОНТАКТЫ ============ -->
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="contact__box">
+      <span class="contact__blob" aria-hidden="true"></span>
+
+      <div class="contact__head">
+        <p class="eyebrow contact__eyebrow" data-reveal data-t="contact.eyebrow">Беру новые проекты</p>
+        <h2 class="h-xl contact__title" data-split data-t="contact.title">Расскажите про свою задачу</h2>
+        <p class="lead contact__lead" data-reveal data-t="contact.lead">
+          Пары предложений достаточно: что за&nbsp;бизнес и&nbsp;что нужно сделать.
+          Отвечу в&nbsp;течение дня, назову стоимость и&nbsp;сроки.
+        </p>
+      </div>
+
+      <ul class="contact__links" id="contactLinks">
+        <li data-reveal>
+          <a href="https://vk.com/rzgdesgn" target="_blank" rel="noopener" data-magnetic>
+            <span class="contact__label">ВКонтакте</span>
+            <span class="contact__value">vk.com/rzgdesgn</span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ ПОДВАЛ ============ -->
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <a class="footer__logo" href="#hero" aria-label="В начало">
+      <img class="js-logo" src="assets/logo.svg" alt="Roman Zamirovsky" width="406" height="123">
+    </a>
+    <!-- ссылки на разделы портфолио дорисовывает js/main.js -->
+    <nav class="footer__nav" id="footerNav" aria-label="Подвал"></nav>
+    <p class="footer__copy muted">© <span id="year">2026</span> <span data-t="footer.name">Роман Замировский</span><br><span data-t="footer.role">Графический дизайнер</span></p>
+  </div>
+</footer>
+
+<!-- ============ ГАЛЕРЕЯ ПРОЕКТА ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" hidden>
+  <div class="lightbox__backdrop" data-close></div>
+  <div class="lightbox__panel" role="document">
+    <button class="lightbox__close" id="lightboxClose" aria-label="Закрыть" data-close>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <figure class="lightbox__media">
+      <div class="lightbox__stage">
+        <!-- прокручиваемая область: длинные скриншоты сайтов едут вниз -->
+        <div class="lightbox__view" id="lightboxView"><img id="lightboxImg" src="" alt=""></div>
+        <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Предыдущая картинка">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Следующая картинка">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <span class="lightbox__count" id="lightboxCount">1 / 1</span>
+      </div>
+      <!-- лента миниатюр под картинкой: видно, что дальше есть ещё макеты -->
+      <div class="lightbox__thumbs" id="lightboxThumbs"></div>
+    </figure>
+
+    <div class="lightbox__body">
+      <p class="eyebrow" id="lightboxCat">Раздел</p>
+      <h3 class="h-lg" id="lightboxTitle">Проект</h3>
+      <p class="lightbox__client" id="lightboxClient"></p>
+      <p class="lightbox__text" id="lightboxText"></p>
+      <ul class="lightbox__tags" id="lightboxTags"></ul>
+    </div>
+  </div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<script src="data/content.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
