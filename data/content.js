@@ -100,6 +100,11 @@ window.CONTENT = {
       "lead": "Пары предложений достаточно: что за бизнес и что нужно сделать. Отвечу в течение дня, назову стоимость и сроки.",
       "links": [
         {
+          "label": "Telegram",
+          "value": "@Romanphdg",
+          "url": "https://t.me/Romanphdg"
+        },
+        {
           "label": "ВКонтакте",
           "value": "vk.com/rzgdesgn",
           "url": "https://vk.com/rzgdesgn"
