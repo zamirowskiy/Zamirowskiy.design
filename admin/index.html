@@ -42,6 +42,8 @@
       </button>
     </nav>
 
+    <button class="side__off" id="shutdownBtn" type="button">Выключить админку</button>
+
     <a class="side__site" href="../" target="_blank" rel="noopener">
       Открыть сайт
       <svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -53,9 +55,12 @@
     <header class="top">
       <h1 class="top__title" id="pageTitle">Портфолио</h1>
       <span class="top__status" id="status" data-state="saved">Всё сохранено</span>
-      <button class="btn btn--accent" id="saveBtn" disabled>
+      <button class="btn btn--ghost" id="saveBtn" disabled>
         Сохранить
         <kbd>Ctrl+S</kbd>
+      </button>
+      <button class="btn btn--accent" id="publishBtn" disabled title="Сохранит правки и отправит их на сайт">
+        Опубликовать на сайт
       </button>
     </header>
 

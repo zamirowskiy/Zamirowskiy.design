@@ -18,7 +18,9 @@ import json
 import os
 import re
 import secrets
+import subprocess
 import sys
+import threading
 import time
 import webbrowser
 from datetime import datetime
@@ -39,6 +41,10 @@ HEADER = ('// Содержимое сайта. Правится через ад�
 # Простая защита от чужих страниц в браузере: запись принимается только
 # с этим токеном, а он отдаётся лишь странице админки на этом же адресе.
 TOKEN = secrets.token_urlsafe(24)
+
+PUBLISH_LOCK = threading.Lock()
+GIT_ENV = dict(os.environ, GIT_TERMINAL_PROMPT='0')
+NO_WINDOW = 0x08000000 if os.name == 'nt' else 0
 
 
 def read_content():
@@ -99,6 +105,63 @@ def write_content(data):
     os.replace(tmp, CONTENT)        # атомарно: сайт никогда не увидит полфайла
 
 
+def git(*args, timeout=90):
+    """Запуск git в папке сайта. Возвращает (код, вывод)."""
+    try:
+        r = subprocess.run(['git'] + list(args), cwd=ROOT, capture_output=True, text=True,
+                           stdin=subprocess.DEVNULL,
+                           encoding='utf-8', errors='replace', timeout=timeout,
+                           env=GIT_ENV, creationflags=NO_WINDOW)
+    except FileNotFoundError:
+        return 127, 'Не найден git. Установите Git for Windows (git-scm.com).'
+    except subprocess.TimeoutExpired:
+        return 124, 'git не ответил за %d с (нет интернета или GitHub недоступен).' % timeout
+    return r.returncode, ((r.stdout or '') + (r.stderr or '')).strip()
+
+
+def publish_state():
+    """Что ещё не ушло на GitHub: есть ли правки в файлах и неотправленные коммиты."""
+    code, out = git('status', '--porcelain', timeout=20)
+    if code != 0:
+        return {'ok': False, 'error': out}
+    changed = [l for l in out.splitlines() if l.strip()]
+    code, ahead = git('rev-list', '--count', '@{u}..HEAD', timeout=20)
+    ahead = int(ahead) if code == 0 and ahead.isdigit() else 0
+    return {'ok': True, 'changed': len(changed), 'ahead': ahead, 'pending': bool(changed) or ahead > 0}
+
+
+def publish():
+    """Коммит всех правок и отправка на GitHub. Сайт обновится сам (GitHub Pages)."""
+    with PUBLISH_LOCK:
+        st = publish_state()
+        if not st['ok']:
+            return 500, {'error': st['error']}
+        if not st['pending']:
+            return 200, {'ok': True, 'nothing': True}
+
+        if st['changed']:
+            code, out = git('add', '-A')
+            if code:
+                return 500, {'error': 'git add: ' + out}
+            ident = []
+            if not git('config', 'user.email')[1]:
+                ident = ['-c', 'user.name=Roman Zamirovsky', '-c', 'user.email=kimininarus76@gmail.com']
+            msg = 'Правки через админку, ' + datetime.now().strftime('%d.%m.%Y %H:%M')
+            code, out = git(*(ident + ['commit', '-m', msg]))
+            if code:
+                return 500, {'error': 'git commit: ' + out}
+
+        # на GitHub могли появиться свои правки (например, файл CNAME) — подтягиваем
+        code, out = git('pull', '--rebase', '--autostash')
+        if code:
+            git('rebase', '--abort', timeout=20)
+            return 500, {'error': 'Не удалось подтянуть правки с GitHub: ' + out[-400:]}
+        code, out = git('push')
+        if code:
+            return 500, {'error': 'Не отправилось на GitHub: ' + out[-400:]}
+        return 200, {'ok': True}
+
+
 def slugify(name):
     table = str.maketrans({
         'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -143,6 +206,9 @@ class Handler(SimpleHTTPRequestHandler):
                 self.send_json(200, {'content': read_content(), 'token': TOKEN})
             except Exception as e:
                 self.send_json(500, {'error': 'Не прочитал data/content.js: %s' % e})
+            return
+        if url.path == '/api/publish-state':
+            self.send_json(200, publish_state())
             return
         if url.path == '/api/backups':
             names = sorted((n for n in os.listdir(BACKUPS) if n.startswith('content-')), reverse=True) \
@@ -195,6 +261,16 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_json(200, {'path': rel})
             return
 
+        if url.path == '/api/publish':
+            code, obj = publish()
+            self.send_json(code, obj)
+            return
+
+        if url.path == '/api/shutdown':
+            self.send_json(200, {'ok': True})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return
+
         if url.path == '/api/restore':
             q = parse_qs(url.query)
             name = (q.get('name') or [''])[0]
@@ -213,6 +289,12 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 def main():
+    # под pythonw (запуск без окна) нет консоли — пишем лог в файл, так видно ошибки
+    if sys.stdout is None or sys.stderr is None:
+        os.makedirs(BACKUPS, exist_ok=True)
+        log = open(os.path.join(BACKUPS, 'admin.log'), 'a', encoding='utf-8', buffering=1)
+        sys.stdout = sys.stdout or log
+        sys.stderr = sys.stderr or log
     port = int(os.environ.get('ADMIN_PORT', '8777'))
     try:
         server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
@@ -224,7 +306,7 @@ def main():
     url = 'http://127.0.0.1:%d/admin/' % port
     print('Админка: %s' % url)
     print('Сайт:    http://127.0.0.1:%d/' % port)
-    print('Чтобы остановить — закройте это окно или нажмите Ctrl+C.')
+    print('Остановить: кнопка «Выключить админку» в меню слева или Ctrl+C.')
     if '--no-browser' not in sys.argv:
         webbrowser.open(url)
     try:

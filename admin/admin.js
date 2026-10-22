@@ -160,13 +160,59 @@
     var dirty = isDirty();
     if (mode === 'saving') { st.dataset.state = 'saving'; st.textContent = 'Сохраняю…'; btn.disabled = true; return; }
     if (mode === 'error') { st.dataset.state = 'error'; st.textContent = 'Не сохранилось'; btn.disabled = false; return; }
-    st.dataset.state = dirty ? 'dirty' : 'saved';
-    st.textContent = dirty ? 'Есть несохранённые изменения' : 'Всё сохранено';
+    if (dirty) { st.dataset.state = 'dirty'; st.textContent = 'Есть несохранённые изменения'; }
+    else if (pending) { st.dataset.state = 'unpublished'; st.textContent = 'Сохранено, но не опубликовано на сайте'; }
+    else { st.dataset.state = 'saved'; st.textContent = 'Всё сохранено и опубликовано'; }
     btn.disabled = !dirty;
+    var pub = $('#publishBtn');
+    if (pub && !publishing) pub.disabled = !(dirty || pending);
     $('#navCount').textContent = state.projects.length;
     if (state.site.assets.logo) $('#sideLogo').src = src(state.site.assets.logo);
   }
   var changed = debounce(function () { updateStatus(); }, 150);
+
+  /* --- публикация: сохранить -> git commit -> push на GitHub --- */
+  var pending = false, publishing = false;
+
+  function refreshPending() {
+    return fetch('/api/publish-state', { cache: 'no-store' }).then(function (r) { return r.json(); })
+      .then(function (d) { pending = !!(d && d.ok && d.pending); updateStatus(); })
+      .catch(function () {});
+  }
+
+  function saveNow() {
+    if (!isDirty()) return Promise.resolve();
+    var busy = Object.keys(uploads).some(function (k) { return uploads[k].length; });
+    if (busy) return Promise.reject(new Error('Дождитесь, пока догрузятся картинки'));
+    var bad = state.projects.filter(function (p) { return !p.title.trim(); });
+    if (bad.length) {
+      setPage('works'); openCase(bad[0].id);
+      return Promise.reject(new Error('У кейса нет названия — открыл его, заполните'));
+    }
+    var body = serialize();
+    return api('/api/content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+      .then(function () { savedJSON = body; });
+  }
+
+  function publish() {
+    if (publishing) return;
+    publishing = true;
+    var pub = $('#publishBtn'), label = pub.textContent;
+    pub.disabled = true; pub.textContent = 'Публикую…';
+    var st = $('#status'); st.dataset.state = 'saving'; st.textContent = 'Отправляю на сайт…';
+    saveNow()
+      .then(function () { return api('/api/publish', { method: 'POST' }); })
+      .then(function (r) {
+        pending = false;
+        toast(r.nothing ? 'Нечего публиковать: всё уже на сайте'
+          : 'Опубликовано. Сайт обновится через 1–2 минуты (обновите с Ctrl+F5)', 'ok');
+      })
+      .catch(function (e) { toast(e.message, 'error'); })
+      .then(function () {
+        publishing = false; pub.textContent = label;
+        return refreshPending();
+      });
+  }
 
   function save() {
     if (!isDirty()) return;
@@ -1226,7 +1272,18 @@
         var b = e.target.closest('[data-page]');
         if (b) setPage(b.dataset.page);
       });
-      $('#saveBtn').addEventListener('click', save);
+      $('#saveBtn').addEventListener('click', function () { save(); setTimeout(refreshPending, 400); });
+      $('#publishBtn').addEventListener('click', publish);
+      $('#shutdownBtn').addEventListener('click', function () {
+        confirmBox('Выключить админку?', 'Страница перестанет сохранять. Чтобы вернуться, запустите «Админка» снова.', 'Выключить')
+          .then(function (ok) {
+            if (!ok) return;
+            api('/api/shutdown', { method: 'POST' }).catch(function () {}).then(function () {
+              document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;color:#999">Админка выключена. Это окно можно закрыть.</p>';
+            });
+          });
+      });
+      refreshPending();
 
       document.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'ы' || e.code === 'KeyS')) { e.preventDefault(); save(); return; }
